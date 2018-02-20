@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  testsrv:
+    environment:
+      - "MYSQL_ROOT_PASSWORD=secret"
+      - "TZ=Asia/Tokyo"
+    image: mysql:5.7
+    volumes:
+      - test_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --explicit_defaults_for_timestamp
+
+  jupyter:
+    build: ./docker
+    image: altus5/jupyter-mysql
+    volumes:
+      - ./work:/home/jovyan/work
+    ports:
+      - "8888:8888"
+
+volumes:
+  test_data:
+    driver: local
